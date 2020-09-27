@@ -223,8 +223,9 @@ public class ingresodecontrasena extends javax.swing.JFrame {
             if (j == true) {
 
                 miCrud.InsertarUsuario(con, usuario, pass, correoE, contraseñaE, super_usuarioE, dependencia_idE, primer_nombreE, segundo_nombreE, primer_apellidoE, segundo_apellidoE);
-                miCrud.commit();
                 mibitacora.Guardar_Clasificación(usuario, mibitacora.fechaactual(), mibitacora.horaactual(),"commit" ,"usuario");
+
+                miCrud.commit();
                 autorizarbackup++;
                 crearcuenta cc=new crearcuenta(autorizarbackup);
                 cc.setVisible(true);

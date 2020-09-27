@@ -353,16 +353,17 @@ public class CRUD {
         }
         return x;
     }
-    public void BusquedaDeUsuarioPorCorreo(String correo,String fecha, JTextField correoT , JTextField prinom, JTextField segnom,JTextField priap,JTextField segap,JComboBox dep, JRadioButton superU) {
-        
+
+    public void BusquedaDeUsuarioPorCorreo(String elcorreo, String fecha, JTextField correoT, JTextField prinom, JTextField segnom, JTextField priap, JTextField segap, JComboBox dep, JRadioButton superU) {
+
         try {
             //Connection miConexion=(Connection) Conexion.GetConnection();
 
             Statement s = miConexion.createStatement();
-            ResultSet clr = s.executeQuery("select u.super_usuario,u.correo,u.primer_nombre,u.segundo_nombre,u.primer_apellido,u.segundo_apellido, dp.la_dependencia from usuario u inner join dependencia dp on u.dependencia_id=dp.id where u.correo="+correo);
+            ResultSet clr = s.executeQuery("select u.super_usuario,u.correo,u.primer_nombre,u.segundo_nombre,u.primer_apellido,u.segundo_apellido, dp.la_dependencia from usuario u inner join dependencia dp on u.dependencia_id=dp.id where u.id=" + 21);
 
             while (clr.next()) {
-                boolean sp=clr.getBoolean("u.super_usuario");
+                boolean sp = clr.getBoolean("u.super_usuario");
                 String correo2 = clr.getString("u.correo");
                 String primernombre2 = clr.getString("u.primer_nombre");
                 String segundonombre2 = clr.getString("u.segundo_nombre");
@@ -376,7 +377,7 @@ public class CRUD {
                 priap.setText(primerapellido2);
                 segap.setText(segundoapellido2);
                 dep.setActionCommand(dependencia);
-                
+
                 //System.out.println("EL ID DE LA SERIE ENCONTRADA"+ clr.getInt("id") );
             }
 
@@ -585,6 +586,8 @@ public class CRUD {
     }
 
     public void commit() {
+        //mibitacora.Guardar_Clasificación(correo, mibitacora.fechaactual(), mibitacora.horaactual(), "commit", "usuario");
+
         commit();
     }
 

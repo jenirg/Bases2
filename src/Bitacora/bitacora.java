@@ -23,14 +23,14 @@ public class bitacora {
         BufferedWriter bw;
         PrintWriter wr;
         try {
-            w= new FileWriter("Bitacora de Transacciones",true);
+            w= new FileWriter("Bitacora de Transacciones.txt",true);
             bw = new BufferedWriter(w); 
             wr= new PrintWriter(bw);
             wr.append("El usuario "+usuario+" en la fecha: "+fecha+" y hora: "+hora+"acciona en la tabla "+tabla+" generando un"+accion+"\n");
             wr.close();
             
             bw.close();
-            
+            JOptionPane.showMessageDialog(null, "entra en"+ accion);
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, "ERRRO"+e);
         }
