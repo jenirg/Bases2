@@ -5,6 +5,7 @@
  */
 package intefaz;
 
+import Bitacora.bitacora;
 import Clases.CRUD;
 import Usuario.Compresor;
 import conexion.ConexionBD;
@@ -20,14 +21,17 @@ import javax.swing.JOptionPane;
  * @author dell
  */
 public class ingresodecontrasena extends javax.swing.JFrame {
-String contrasenia="", usuario = "";
-String correoE,contraseñaE;
-boolean super_usuarioE;
-String dependencia_idE,  primer_nombreE, segundo_nombreE,  primer_apellidoE, segundo_apellidoE;
-String pass_concatenada2 = "";
- CRUD miCrud = new CRUD();
+
+    String contrasenia = "", usuario = "";
+    String correoE, contraseñaE;
+    int autorizarbackup=0;
+    boolean super_usuarioE;
+    String dependencia_idE, primer_nombreE, segundo_nombreE, primer_apellidoE, segundo_apellidoE;
+    String pass_concatenada2 = "";
+    CRUD miCrud = new CRUD();
+    bitacora mibitacora=new bitacora();
     Connection con = (Connection) ConexionBD.GetConnection();
-    
+
     /**
      * Creates new form ingresodecontrasena
      */
@@ -35,16 +39,18 @@ String pass_concatenada2 = "";
         initComponents();
         this.setLocationRelativeTo(null);
     }
-       public ingresodecontrasena(String correo,String contraseña, boolean super_usuario, String dependencia_id, String primer_nombre, String segundo_nombre, String primer_apellido, String segundo_apellido) {
+
+    public ingresodecontrasena(int aut,String correo, String contraseña, boolean super_usuario, String dependencia_id, String primer_nombre, String segundo_nombre, String primer_apellido, String segundo_apellido) {
         initComponents();
         correoE = correo;
-        contraseñaE =contraseña;
-        super_usuarioE=super_usuario;
-        dependencia_idE=dependencia_id;
-        primer_nombreE=primer_nombre;
-        segundo_nombreE=segundo_nombre;
-        primer_apellidoE=primer_apellido;
-        segundo_apellidoE=segundo_apellido;
+        contraseñaE = contraseña;
+        super_usuarioE = super_usuario;
+        dependencia_idE = dependencia_id;
+        primer_nombreE = primer_nombre;
+        segundo_nombreE = segundo_nombre;
+        primer_apellidoE = primer_apellido;
+        segundo_apellidoE = segundo_apellido;
+        autorizarbackup=aut;
         this.setLocationRelativeTo(null);
     }
 
@@ -175,25 +181,22 @@ String pass_concatenada2 = "";
 
     private void jPasswordField1KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jPasswordField1KeyPressed
         // TODO add your handling code here:
-       
-        String pass_concatenada2="";
-         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
-            char[] contraseña = jPasswordField1.getPassword();
-            for (int i = 0; i < contraseña.length; i++) {
-                pass_concatenada2 = pass_concatenada2 + contraseña[i];
-                System.out.println(contraseña[i]);
-            }
-            contrasenia=pass_concatenada2;
-             System.out.println(pass_concatenada2);
+
+        //String pass_concatenada2="";
+        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
+
+            contrasenia = pass_concatenada2;
+            System.out.println(pass_concatenada2);
             //jButton3.requestFocus();
-             System.out.println(comprimir(pass_concatenada2));
-             jPasswordField1.requestFocus();
+            System.out.println(comprimir(pass_concatenada2));
+            jPasswordField1.requestFocus();
         }
     }//GEN-LAST:event_jPasswordField1KeyPressed
-    public String getContraseña(){
-    return contrasenia;
+    public String getContraseña() {
+        return contrasenia;
     }
-      private String comprimir(String frase) {
+
+    private String comprimir(String frase) {
         Compresor compresor = new Compresor();
         String Cadena_en_binario = compresor.CodigoAscii_a_binario(frase);
         String cadena_simple = compresor.cadena_RLE(Cadena_en_binario);
@@ -201,23 +204,44 @@ String pass_concatenada2 = "";
         return ultima_cadena;
     }
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-    try {
-        // TODO add your handling code here:
-        usuario = jTextField1.getText();
-        String pass= (comprimir(pass_concatenada2));
-        System.out.println(usuario);
-        System.out.println(pass_concatenada2);
-        miCrud.InsertarUsuario(con, usuario, pass,correoE,contraseñaE,super_usuarioE,dependencia_idE,primer_nombreE, segundo_nombreE, primer_apellidoE, segundo_apellidoE);
-        
-        
-        
-        Menu2 menul = new Menu2();
-        setVisible(false);
-        // ingresodecontrasena yy = new ingresodecontrasena();
-        // yy.setVisible(true);
-    } catch (SQLException ex) {
-        Logger.getLogger(ingresodecontrasena.class.getName()).log(Level.SEVERE, null, ex);
-    }
+        miCrud.setUsuarioNew(usuario);
+        try {
+            // TODO add your handling code here:
+            // ver que los txt no estene vacios 
+            pass_concatenada2 = "";
+            usuario = jTextField1.getText();
+            char[] contraseña = jPasswordField1.getPassword();
+            for (int i = 0; i < contraseña.length; i++) {
+                pass_concatenada2 = pass_concatenada2 + contraseña[i];
+                System.out.println(contraseña[i]);
+            }
+            String pass = (comprimir(pass_concatenada2));
+            System.out.println(usuario);
+            System.out.println(pass_concatenada2);
+            System.out.println("pass comprimirda " + pass);
+            boolean j = miCrud.BusquedaDeSuperUsuario(usuario, pass);
+            if (j == true) {
+
+                miCrud.InsertarUsuario(con, usuario, pass, correoE, contraseñaE, super_usuarioE, dependencia_idE, primer_nombreE, segundo_nombreE, primer_apellidoE, segundo_apellidoE);
+                miCrud.commit();
+                mibitacora.Guardar_Clasificación(usuario, mibitacora.fechaactual(), mibitacora.horaactual(),"commit" ,"usuario");
+                autorizarbackup++;
+                crearcuenta cc=new crearcuenta(autorizarbackup);
+                cc.setVisible(true);
+                dispose();
+                /* Menu2 menu = new Menu2();
+
+                setVisible(false);
+                menu.setVisible(true);*/
+            }
+
+            //        ingresodecontrasena yy = new ingresodecontrasena();
+            //     yy.setVisible(true);
+        } catch (SQLException ex) {
+            miCrud.rollback();
+            mibitacora.Guardar_Clasificación(usuario, mibitacora.fechaactual(), mibitacora.horaactual(),"rollback" ,"usuario");
+            Logger.getLogger(ingresodecontrasena.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
@@ -226,7 +250,7 @@ String pass_concatenada2 = "";
 
     private void jTextField1KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextField1KeyPressed
         // TODO add your handling code here:
-         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
+        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
             usuario = jTextField1.getText();
             jPasswordField1.setText("");
             jPasswordField1.requestFocus();

@@ -5,8 +5,10 @@
  */
 package intefaz;
 
+import Clases.CRUD;
 import java.awt.event.KeyEvent;
 import java.util.Properties;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.mail.Message;
@@ -27,10 +29,19 @@ public class PanelMail extends javax.swing.JFrame {
     int codigo;
     int numero, numero2;
     int multiplicacion =0;
+    int ubicaciondeform=0;
+    CRUD micrud=new CRUD();
+   
     /**
      * Creates new form PanelMail
      */
     public PanelMail() {
+        initComponents();
+        this.setLocationRelativeTo(null);
+        
+    }
+       public PanelMail(int ubicaciondeformV) {
+        ubicaciondeform=ubicaciondeformV;
         initComponents();
         this.setLocationRelativeTo(null);
     }
@@ -72,8 +83,10 @@ public class PanelMail extends javax.swing.JFrame {
         jLabel4 = new javax.swing.JLabel();
         txtcodigo = new javax.swing.JTextField();
         btnEnviar1 = new javax.swing.JButton();
+        jButton1 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setUndecorated(true);
 
         jPanel1.setBackground(new java.awt.Color(204, 204, 204));
 
@@ -112,6 +125,15 @@ public class PanelMail extends javax.swing.JFrame {
             }
         });
 
+        jButton1.setBackground(new java.awt.Color(204, 0, 0));
+        jButton1.setFont(new java.awt.Font("Tahoma", 1, 10)); // NOI18N
+        jButton1.setText("CANCELAR");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -120,7 +142,6 @@ public class PanelMail extends javax.swing.JFrame {
                 .addGap(59, 59, 59)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(btnEnviar)
-                    .addComponent(btnEnviar1)
                     .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                         .addGroup(jPanel1Layout.createSequentialGroup()
                             .addComponent(jLabel1)
@@ -128,7 +149,10 @@ public class PanelMail extends javax.swing.JFrame {
                             .addComponent(txtdestino, javax.swing.GroupLayout.DEFAULT_SIZE, 273, Short.MAX_VALUE))
                         .addComponent(jLabel3, javax.swing.GroupLayout.Alignment.LEADING)
                         .addComponent(jLabel4, javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(txtcodigo, javax.swing.GroupLayout.Alignment.LEADING)))
+                        .addComponent(txtcodigo, javax.swing.GroupLayout.Alignment.LEADING))
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addComponent(jButton1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnEnviar1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addGap(55, 55, 55))
         );
         jPanel1Layout.setVerticalGroup(
@@ -148,7 +172,9 @@ public class PanelMail extends javax.swing.JFrame {
                 .addComponent(txtcodigo, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(32, 32, 32)
                 .addComponent(btnEnviar1)
-                .addContainerGap(80, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 32, Short.MAX_VALUE)
+                .addComponent(jButton1)
+                .addGap(27, 27, 27))
         );
 
         jDesktopPane1.setLayer(jPanel1, javax.swing.JLayeredPane.DEFAULT_LAYER);
@@ -180,13 +206,17 @@ public class PanelMail extends javax.swing.JFrame {
 
     private void btnEnviar1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEnviar1ActionPerformed
         // TODO add your handling code here:
+       // if (ubicaciondeform==1){
+            //para cambio de contraseña
         codigo = Integer.parseInt(txtcodigo.getText());
         System.out.println(codigo);
+        String correo=txtdestino.getText();
         if(codigo == multiplicacion){
-         recuperarcontrasenia yy = new recuperarcontrasenia();
+         recuperarcontrasenia yy = new recuperarcontrasenia(correo);
          yy.setVisible(true);
            dispose();
-        }
+        }//}
+        
         
     }//GEN-LAST:event_btnEnviar1ActionPerformed
 
@@ -233,6 +263,13 @@ public class PanelMail extends javax.swing.JFrame {
         }*/
     }//GEN-LAST:event_btnEnviarActionPerformed
 
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        // TODO add your handling code here:
+        Menu menu=new Menu();
+        menu.setVisible(true);
+        dispose();
+    }//GEN-LAST:event_jButton1ActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -271,6 +308,7 @@ public class PanelMail extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnEnviar;
     private javax.swing.JButton btnEnviar1;
+    private javax.swing.JButton jButton1;
     private javax.swing.JDesktopPane jDesktopPane1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel3;

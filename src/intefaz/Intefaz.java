@@ -11,8 +11,24 @@ import java.util.Calendar;
 import javax.swing.JOptionPane;
 import Clases.*;
 import Usuario.Compresor;
+import com.itextpdf.text.log.Logger;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.logging.Level;
+import net.sf.jasperreports.engine.JasperCompileManager;
+import net.sf.jasperreports.engine.JasperExportManager;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.engine.design.JasperDesign;
+import net.sf.jasperreports.engine.xml.JRXmlLoader;
 
 /**
  *
@@ -24,13 +40,41 @@ public class Intefaz {
      * @param args the command line arguments
      */
     public static void main(String[] args) throws SQLException {
+  java.util.Date Fechaactual = new java.util.Date();
+        SimpleDateFormat formato = new SimpleDateFormat("dd-MMM-YYYY");
+        System.out.println(formato.format(Fechaactual));
+        java.util.Date date = new java.util.Date();
+
+  
+        DateFormat hourFormat = new SimpleDateFormat("HH:mm:ss");
+      System.out.println("Hora: " + hourFormat.format(date));
+        String hora=hourFormat.format(date);
+        System.out.println("hora: "+ hora);
+        try {
+            Process p = Runtime.getRuntime().exec("mysqldump -u root -p1234 conexion2");
+            InputStream is = p.getInputStream();
+            FileOutputStream fos = new FileOutputStream("Backup_" + formato.format(Fechaactual) + ".sql");
+            byte[] buffer = new byte[1000];
+            int leido = is.read(buffer);
+            while (leido > 0) {
+                fos.write(buffer, 0, leido);
+                leido = is.read(buffer);
+            }
+            System.out.println("BACKUP_REALIZADO");
+            fos.close();
+
+        } catch (Exception ex) {
+            java.util.logging.Logger.getLogger(Menu .class.getName()).log(Level.SEVERE, null, ex);
+            System.out.println("ERRO"+ex);
+
+        }
 
        /* Compresor compresor = new Compresor();
         String Cadena_en_binario = compresor.CodigoAscii_a_binario("prueba");
         String cadena_simple = compresor.cadena_RLE(Cadena_en_binario);
         String ultima_cadena = compresor.rle_a_Ascii(cadena_simple);
         System.out.println("final    " + ultima_cadena);*/
-        System.out.println("holaaaaaaaaaaaaaaaaa");
+      //  System.out.println("holaaaaaaaaaaaaaaaaa");
         //CRUD miCrud = new CRUD();
         //Date fechaDate = (Date) new SimpleDateFormat("yyyy-MM-dd").parse("2020-05-06");
         //miCrud.Insertar("compu",4, "Lucas");
@@ -81,6 +125,22 @@ public class Intefaz {
                 JOptionPane.showMessageDialog(null, "Error al agregar");
             }*/
         // TODO */
+ 
     }
-
+       public void generarReporte() throws net.sf.jasperreports.engine.JRException, FileNotFoundException{
+    
+    InputStream inputStream = null;
+     try {
+          inputStream  = new FileInputStream("src/interfaz/newReport.jrxml");
+          
+        } catch (FileNotFoundException ex) {
+           // Logger.getLogger(interfaz.class.getName()).log(Level.SEVERE, null, ex);
+           
+        }
+     Map parameters= new HashMap();
+     JasperDesign jasperDesign = JRXmlLoader.load(inputStream);
+    JasperReport jasperReport = JasperCompileManager.compileReport(jasperDesign);
+    JasperPrint jasperPrint =JasperFillManager.fillReport(jasperReport, parameters);
+    JasperExportManager.exportReportToHtmlFile(jasperPrint, "src/interfaz/newReport.pdf");
+}
 }

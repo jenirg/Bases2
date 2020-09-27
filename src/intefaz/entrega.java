@@ -5,6 +5,8 @@
  */
 package intefaz;
 
+import Backup.backup;
+import Bitacora.bitacora;
 import Clases.CRUD;
 import conexion.ConexionBD;
 import java.awt.event.KeyEvent;
@@ -20,19 +22,35 @@ import javax.swing.JOptionPane;
  */
 public class entrega extends javax.swing.JFrame {
 
-   
     String letra, dispositivo = "", NoS = "", ubicacion = "", marca = "", modelo = "", serie = "", instala = "", persona_entrega = "", Mes = "", dependencia = "", persona_recibe = "";
-    int Dia = 0, Año = 0, cant = 0;
-    String solicitado = "", autorizado = "", entregado = "", recibido = "", referencia = "";
+    int Dia = 0, Año = 0, cant = 0, autorizacionbackup = 0;
+    String solicitado = "", autorizado = "", entregado = "", recibido = "", referencia = "", usuarioNEW = "";
     int nopregunta = 0;
     CRUD micrud = new CRUD();
+    bitacora mibitacora=new bitacora();
     Connection miConexion = (Connection) ConexionBD.GetConnection();
+    backup mibackup = new backup();
+
     /**
      * Creates new form notaderesponsabilidad
      */
     public entrega() {
         initComponents();
+        jComboBox9.setVisible(false);
         this.setLocationRelativeTo(null);
+        micrud.ConsultaDeEmpleados(jComboBox4, jComboBox9, jComboBox6, jComboBox9);
+        micrud.ConsultaDeColaborador(jComboBox7);
+        micrud.ConsultaDeDependencia(jComboBox8);
+    }
+
+    public entrega(String usuario) {
+        initComponents();
+        jComboBox9.setVisible(false);
+        this.setLocationRelativeTo(null);
+        micrud.ConsultaDeEmpleados(jComboBox4, jComboBox9, jComboBox6, jComboBox9);
+        micrud.ConsultaDeColaborador(jComboBox7);
+        micrud.ConsultaDeDependencia(jComboBox8);
+        usuarioNEW = usuario;
     }
 
     /**
@@ -85,6 +103,7 @@ public class entrega extends javax.swing.JFrame {
         jButton10 = new javax.swing.JButton();
         jLabel20 = new javax.swing.JLabel();
         jTextField7 = new javax.swing.JTextField();
+        jComboBox9 = new javax.swing.JComboBox<>();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setUndecorated(true);
@@ -218,7 +237,7 @@ public class entrega extends javax.swing.JFrame {
         jButton4.setBackground(new java.awt.Color(255, 51, 51));
         jButton4.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         jButton4.setForeground(new java.awt.Color(255, 255, 255));
-        jButton4.setText("SALIR");
+        jButton4.setText("CERRAR SESIÓN");
         jButton4.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton4ActionPerformed(evt);
@@ -235,7 +254,6 @@ public class entrega extends javax.swing.JFrame {
             }
         });
 
-        jComboBox4.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Mariana Ramirez" }));
         jComboBox4.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
                 jComboBox4ItemStateChanged(evt);
@@ -249,14 +267,12 @@ public class entrega extends javax.swing.JFrame {
             }
         });
 
-        jComboBox6.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Mariana Lopez" }));
         jComboBox6.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
                 jComboBox6ItemStateChanged(evt);
             }
         });
 
-        jComboBox7.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Mariana Lopez" }));
         jComboBox7.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
                 jComboBox7ItemStateChanged(evt);
@@ -307,7 +323,6 @@ public class entrega extends javax.swing.JFrame {
         jLabel19.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         jLabel19.setText("Dependencia:");
 
-        jComboBox8.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Mariana Lopez" }));
         jComboBox8.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
                 jComboBox8ItemStateChanged(evt);
@@ -325,10 +340,16 @@ public class entrega extends javax.swing.JFrame {
         jLabel20.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         jLabel20.setText("Ubicación:");
 
-        jTextField7.setEditable(false);
         jTextField7.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 jTextField7KeyPressed(evt);
+            }
+        });
+
+        jComboBox9.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Mariana Lopez" }));
+        jComboBox9.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                jComboBox9ItemStateChanged(evt);
             }
         });
 
@@ -369,17 +390,6 @@ public class entrega extends javax.swing.JFrame {
                         .addGap(51, 51, 51)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
-                                .addComponent(jLabel1)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel9)
-                                    .addComponent(jLabel2)
-                                    .addComponent(jLabel3)
-                                    .addComponent(jLabel5))
-                                .addGap(0, 0, Short.MAX_VALUE))
-                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
                                 .addComponent(jLabel4)
                                 .addGap(18, 18, 18)
                                 .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -404,7 +414,6 @@ public class entrega extends javax.swing.JFrame {
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addGap(0, 0, Short.MAX_VALUE)
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addComponent(jButton5)
                                     .addGroup(jPanel1Layout.createSequentialGroup()
                                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                                             .addComponent(jLabel13)
@@ -421,7 +430,23 @@ public class entrega extends javax.swing.JFrame {
                                         .addComponent(jButton9))
                                     .addGroup(jPanel1Layout.createSequentialGroup()
                                         .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addGap(495, 495, 495)))))))
+                                        .addGap(495, 495, 495))))
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(jLabel9, javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel3, javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel5, javax.swing.GroupLayout.Alignment.LEADING))
+                                .addGap(0, 0, Short.MAX_VALUE))
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
+                                .addComponent(jLabel1)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(jButton4))))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(24, 24, 24)
+                        .addComponent(jComboBox9, javax.swing.GroupLayout.PREFERRED_SIZE, 395, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jButton5)))
                 .addGap(48, 48, 48))
         );
         jPanel1Layout.setVerticalGroup(
@@ -502,9 +527,11 @@ public class entrega extends javax.swing.JFrame {
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(jTextField7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel20, javax.swing.GroupLayout.PREFERRED_SIZE, 17, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 36, Short.MAX_VALUE)
-                        .addComponent(jButton5)
-                        .addGap(19, 19, 19))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 34, Short.MAX_VALUE)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jButton5)
+                            .addComponent(jComboBox9, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(18, 18, 18))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
@@ -637,27 +664,41 @@ public class entrega extends javax.swing.JFrame {
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         // TODO add your handling code here:
-        Menu menul = new Menu();
-        menul.setVisible(true);
-        dispose();
+        if (autorizacionbackup == 0) {
+            Menu menul = new Menu();
+            menul.setVisible(true);
+            dispose();
+        } else {
+            JOptionPane.showMessageDialog(null, "DEBE CERRAR SESIÓN");
+        }
     }//GEN-LAST:event_jButton3ActionPerformed
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
         // TODO add your handling code here:
-        System.exit(0);
+        if (autorizacionbackup == 0) {
+            Menu menul = new Menu();
+            menul.setVisible(true);
+            dispose();
+        } else if (autorizacionbackup >= 1) {
+            mibackup.generar_backup(usuarioNEW);
+            Menu menul = new Menu();
+            menul.setVisible(true);
+            dispose();
+        }
     }//GEN-LAST:event_jButton4ActionPerformed
 
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
         // TODO add your handling code here:
         // TODO add your handling code here:
+        micrud.setUsuarioNew(usuarioNEW);
         Mes = (String) jComboBox3.getSelectedItem();
         String dia = (String) jComboBox1.getSelectedItem();
         String año = (String) jComboBox2.getSelectedItem();
-        if (jTextField1.getText().isEmpty() || jTextField1.getText().equals('0')) {
+        while (jTextField1.getText().isEmpty() || jTextField1.getText().equals('0')) {
             JOptionPane.showMessageDialog(null, "NO A INGRESADO LA CANTIDAD");
-        } else {
+        } //else {
             cant = Integer.parseInt(jTextField1.getText());
-        }
+        //}
         dispositivo = jTextField2.getText();
         marca = jTextField3.getText();
         modelo = jTextField4.getText();
@@ -688,7 +729,12 @@ public class entrega extends javax.swing.JFrame {
             if (x == true) {
                 try {
                     micrud.IngresarEntrega(miConexion, dispositivo, cant, serie, entregado, NoS, recibido, instala, dependencia, ubicacion);
+                    micrud.commit();
+                    mibitacora.Guardar_Clasificación(usuarioNEW, mibitacora.fechaactual(), mibitacora.horaactual(),"commit" ,"entrega");
+                    autorizacionbackup++;
                 } catch (SQLException ex) {
+                    micrud.rollback();
+                    mibitacora.Guardar_Clasificación(usuarioNEW, mibitacora.fechaactual(), mibitacora.horaactual(),"rollback" ,"entrega");
                     Logger.getLogger(entrega.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
@@ -705,7 +751,8 @@ public class entrega extends javax.swing.JFrame {
 
     private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
         // TODO add your handling code here:
-
+        crearcuenta cuentanueva = new crearcuenta();
+        cuentanueva.setVisible(true);
     }//GEN-LAST:event_jButton6ActionPerformed
 
     private void jComboBox6ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jComboBox6ItemStateChanged
@@ -722,10 +769,14 @@ public class entrega extends javax.swing.JFrame {
         // TODO add your handling code here:
         //   newrecibido = JOptionPane.showInputDialog("Ingrese el nombre:");
         //  jComboBox1.addItem(newrecibido);
+        Colaborador cola = new Colaborador();
+        cola.setVisible(true);
     }//GEN-LAST:event_jButton8ActionPerformed
 
     private void jButton9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton9ActionPerformed
         // TODO add your handling code here:
+        crearcuenta cuentanueva = new crearcuenta();
+        cuentanueva.setVisible(true);
     }//GEN-LAST:event_jButton9ActionPerformed
 
     private void jTextField6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField6ActionPerformed
@@ -747,6 +798,10 @@ public class entrega extends javax.swing.JFrame {
     private void jTextField7KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextField7KeyPressed
         // TODO add your handling code here:
     }//GEN-LAST:event_jTextField7KeyPressed
+
+    private void jComboBox9ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jComboBox9ItemStateChanged
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jComboBox9ItemStateChanged
 
     /**
      * @param args the command line arguments
@@ -805,6 +860,7 @@ public class entrega extends javax.swing.JFrame {
     private javax.swing.JComboBox<String> jComboBox6;
     private javax.swing.JComboBox<String> jComboBox7;
     private javax.swing.JComboBox<String> jComboBox8;
+    private javax.swing.JComboBox<String> jComboBox9;
     private javax.swing.JDesktopPane jDesktopPane1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;

@@ -5,7 +5,16 @@
  */
 package intefaz;
 
+import Backup.backup;
+import Bitacora.bitacora;
+import Clases.CRUD;
+import Usuario.Compresor;
+import conexion.ConexionBD;
 import java.awt.event.KeyEvent;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 
 /**
@@ -13,12 +22,26 @@ import javax.swing.JOptionPane;
  * @author USUARIO
  */
 public class recuperarcontrasenia extends javax.swing.JFrame {
-  String pass_concatenada1 = "", pass_concatenada2 = "";
+
+    CRUD miCrud = new CRUD();
+    Connection con = (Connection) ConexionBD.GetConnection();
+    String pass_concatenada1 = "", pass_concatenada2 = "", correo = "";
+    backup mibackup=new backup();
+    bitacora mibitacora=new bitacora();
+
     /**
      * Creates new form recuperarcontrasenia
      */
     public recuperarcontrasenia() {
         initComponents();
+        this.setLocationRelativeTo(null);
+    }
+
+    public recuperarcontrasenia(String correoU) {
+        correo = correoU;
+        initComponents();
+        this.setLocationRelativeTo(null);
+
     }
 
     /**
@@ -147,10 +170,11 @@ public class recuperarcontrasenia extends javax.swing.JFrame {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
+        miCrud.setUsuarioNew(correo);
         pass_concatenada1 = "";
         pass_concatenada2 = "";
         char[] contraseña1 = jPasswordField2.getPassword();
-         for (int i = 0; i < contraseña1.length; i++) {
+        for (int i = 0; i < contraseña1.length; i++) {
             pass_concatenada1 = pass_concatenada1 + contraseña1[i];
             System.out.println(contraseña1[i]);
         }
@@ -158,28 +182,65 @@ public class recuperarcontrasenia extends javax.swing.JFrame {
         for (int i = 0; i < contraseña2.length; i++) {
             pass_concatenada2 = pass_concatenada2 + contraseña2[i];
             System.out.println(contraseña2[i]);
-            
+
         }
-         System.out.println("pass1 " + pass_concatenada1);
-        System.out.println("pass2 " + pass_concatenada2);
+
+        int compatible = pass_concatenada1.compareTo(pass_concatenada2);
+        if (compatible < 0 || compatible > 0) {
+            JOptionPane.showMessageDialog(null, "La confirmación de contraseña no es la misma , verifique");
+            pass_concatenada1 = "";
+            pass_concatenada2 = "";
+            jPasswordField1.setText("");
+            jPasswordField2.setText("");
+            jPasswordField2.requestFocus();
+        } else {
+
+            try {
+                String xx;
+                xx = comprimir(pass_concatenada1);
+                String yy;
+                yy = comprimir(pass_concatenada2);
+                System.out.println("Cont1:" + xx);
+                System.out.println("Cont2:" + yy);
+                System.out.println("correo"+correo);
+                miCrud.ActualizarContraseña(con, correo,xx);
+                miCrud.commit();
+                mibitacora.Guardar_Clasificación(miCrud.getUsuarioNew(), mibitacora.fechaactual(), mibitacora.horaactual(),"commit" ,"usuario");
+                mibackup.generar_backup(correo);
+                setVisible(false);
+                Menu m=new Menu();
+                m.setVisible(true);
+            } catch (SQLException ex) {
+                miCrud.rollback();
+                mibitacora.Guardar_Clasificación(miCrud.getUsuarioNew(), mibitacora.fechaactual(), mibitacora.horaactual(),"rollback" ,"usuario");
+                Logger.getLogger(recuperarcontrasenia.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+
+
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jPasswordField1KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jPasswordField1KeyPressed
         // TODO add your handling code here:
-         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
-          
-   
+        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
+
             jButton1.requestFocus();
 
         }
     }//GEN-LAST:event_jPasswordField1KeyPressed
-
+    private String comprimir(String frase) {
+        Compresor compresor = new Compresor();
+        String Cadena_en_binario = compresor.CodigoAscii_a_binario(frase);
+        String cadena_simple = compresor.cadena_RLE(Cadena_en_binario);
+        String ultima_cadena = compresor.rle_a_Ascii(cadena_simple);
+        return ultima_cadena;
+    }
     private void jPasswordField2KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jPasswordField2KeyPressed
         // TODO add your handling code here:
-         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
-     
+        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
+
             jPasswordField1.requestFocus();
-             jPasswordField1.setText("");
+            jPasswordField1.setText("");
             jPasswordField1.requestFocus();
         }
     }//GEN-LAST:event_jPasswordField2KeyPressed

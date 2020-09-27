@@ -5,6 +5,7 @@
  */
 package intefaz;
 
+import Bitacora.bitacora;
 import Clases.CRUD;
 import java.awt.event.KeyEvent;
 import java.sql.SQLException;
@@ -21,9 +22,10 @@ import javax.swing.JOptionPane;
 public class Forma57 extends javax.swing.JFrame {
 
     String Mes = "", solicitado = "", autorizado = "", entregado = "", recibido = "", referencia = "";
-    String newsolicitado = "", newautorizado = "", newentregado = "", newrecibido = "";
+    String newsolicitado = "", newautorizado = "", newentregado = "", newrecibido = "",usuarioNEW;
     int Dia = 0, Año = 0;
     CRUD miCrud = new CRUD();
+    bitacora mibitacora=new bitacora();
 
     /**
      * Creates new form Forma57
@@ -34,6 +36,17 @@ public class Forma57 extends javax.swing.JFrame {
         Date Fechaactual = new Date();
         SimpleDateFormat formato = new SimpleDateFormat("dd-MMM-YYYY");
         jLabel4.setText(formato.format(Fechaactual));
+        miCrud.ConsultaDeEmpleados(jComboBox1, jComboBox2, jComboBox3, jComboBox4);
+
+    }
+      public Forma57(String us) {
+        initComponents();
+        this.setLocationRelativeTo(null);
+        Date Fechaactual = new Date();
+        SimpleDateFormat formato = new SimpleDateFormat("dd-MMM-YYYY");
+        jLabel4.setText(formato.format(Fechaactual));
+        miCrud.ConsultaDeEmpleados(jComboBox1, jComboBox2, jComboBox3, jComboBox4);
+        usuarioNEW=us;
     }
 
     /**
@@ -56,12 +69,10 @@ public class Forma57 extends javax.swing.JFrame {
         jLabel12 = new javax.swing.JLabel();
         jLabel13 = new javax.swing.JLabel();
         jButton2 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
         jComboBox1 = new javax.swing.JComboBox<>();
         jComboBox2 = new javax.swing.JComboBox<>();
         jComboBox3 = new javax.swing.JComboBox<>();
         jComboBox4 = new javax.swing.JComboBox<>();
-        jButton1 = new javax.swing.JButton();
         jTextField1 = new javax.swing.JTextField();
         jButton5 = new javax.swing.JButton();
         jButton6 = new javax.swing.JButton();
@@ -107,51 +118,27 @@ public class Forma57 extends javax.swing.JFrame {
             }
         });
 
-        jButton3.setBackground(new java.awt.Color(0, 0, 102));
-        jButton3.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
-        jButton3.setForeground(new java.awt.Color(255, 255, 255));
-        jButton3.setText("OBTENER PDF");
-        jButton3.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton3ActionPerformed(evt);
-            }
-        });
-
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Mariana Ramirez" }));
         jComboBox1.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
                 jComboBox1ItemStateChanged(evt);
             }
         });
 
-        jComboBox2.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Alejandra Gomez" }));
         jComboBox2.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
                 jComboBox2ItemStateChanged(evt);
             }
         });
 
-        jComboBox3.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Mariana Lopez" }));
         jComboBox3.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
                 jComboBox3ItemStateChanged(evt);
             }
         });
 
-        jComboBox4.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Mariana Lopez" }));
         jComboBox4.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
                 jComboBox4ItemStateChanged(evt);
-            }
-        });
-
-        jButton1.setBackground(new java.awt.Color(153, 0, 0));
-        jButton1.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
-        jButton1.setForeground(new java.awt.Color(255, 255, 255));
-        jButton1.setText("SALIR ");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
             }
         });
 
@@ -212,13 +199,10 @@ public class Forma57 extends javax.swing.JFrame {
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addComponent(jLabel1)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(jButton3))
+                                .addGap(0, 0, Short.MAX_VALUE))
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addGap(0, 0, Short.MAX_VALUE)
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addComponent(jButton2)
-                                    .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                                .addComponent(jButton2)))
                         .addGap(31, 31, 31))))
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(85, 85, 85)
@@ -250,23 +234,16 @@ public class Forma57 extends javax.swing.JFrame {
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(59, 59, 59)
-                        .addComponent(jLabel1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jLabel2)
-                        .addGap(18, 18, 18)
-                        .addComponent(jLabel4)
-                        .addGap(18, 18, 18)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel8)
-                            .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(19, 19, 19)
-                        .addComponent(jButton1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(59, 59, 59)
+                .addComponent(jLabel1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jLabel2)
+                .addGap(18, 18, 18)
+                .addComponent(jLabel4)
+                .addGap(18, 18, 18)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel8)
+                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(38, 38, 38)
@@ -331,23 +308,24 @@ public class Forma57 extends javax.swing.JFrame {
             entregado = (String) jComboBox3.getSelectedItem();
             recibido = (String) jComboBox4.getSelectedItem();
             referencia = jTextField1.getText();
-            
+
             ////   Runtime.getRuntime().exec("rund1132 url.dll, FileProtocolHandler"+"C:\Users\jenirg\Desktop\");
             System.out.println("Solicitado " + solicitado);
             System.out.println("Autorizado" + autorizado);
-            
+
             System.out.println("Entregado " + entregado);
             System.out.println("Entregado " + entregado);
             System.out.println("Recibido " + recibido);
-            miCrud.Insertar_Forma57(referencia,solicitado , autorizado, entregado, recibido);
+            miCrud.Insertar_Forma57(referencia, solicitado, autorizado, entregado, recibido);
+            miCrud.commit();
+            mibitacora.Guardar_Clasificación(usuarioNEW, mibitacora.fechaactual(), mibitacora.horaactual(), " commit", "Forma57");
+            dispose();
         } catch (SQLException ex) {
+            miCrud.rollback();
+            mibitacora.Guardar_Clasificación(usuarioNEW, mibitacora.fechaactual(), mibitacora.horaactual(), " rollback", "Forma57");            
             Logger.getLogger(Forma57.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_jButton2ActionPerformed
-
-    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButton3ActionPerformed
     public void insertarcombo1() {
         // extraer datos de la tabla colaborador
         String nombre = "Juan Lucas Gomez Morales";
@@ -383,11 +361,6 @@ public class Forma57 extends javax.swing.JFrame {
         recibido = Recibido;
     }//GEN-LAST:event_jComboBox4ItemStateChanged
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        // TODO add your handling code here:
-        System.exit(0);
-    }//GEN-LAST:event_jButton1ActionPerformed
-
     private void jTextField1KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextField1KeyPressed
         // TODO add your handling code here:
         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
@@ -397,26 +370,29 @@ public class Forma57 extends javax.swing.JFrame {
 
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
         // TODO add your handling code here:
-        newsolicitado = JOptionPane.showInputDialog("Ingrese el nombre:");
-        jComboBox1.addItem(newsolicitado);
+        //newsolicitado = JOptionPane.showInputDialog("Ingrese el nombre:");
+        //jComboBox1.addItem(newsolicitado);
+        crearcuenta cuentanueva = new crearcuenta();
+        cuentanueva.setVisible(true);
+        //dispose();
     }//GEN-LAST:event_jButton5ActionPerformed
 
     private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
         // TODO add your handling code here:
-        newautorizado = JOptionPane.showInputDialog("Ingrese el nombre:");
-        jComboBox1.addItem(newautorizado);
+        crearcuenta cuentanueva = new crearcuenta();
+        cuentanueva.setVisible(true);
     }//GEN-LAST:event_jButton6ActionPerformed
 
     private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
         // TODO add your handling code here:
-        newentregado = JOptionPane.showInputDialog("Ingrese el nombre:");
-        jComboBox1.addItem(newentregado);
+        crearcuenta cuentanueva = new crearcuenta();
+        cuentanueva.setVisible(true);
     }//GEN-LAST:event_jButton7ActionPerformed
 
     private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton8ActionPerformed
         // TODO add your handling code here:
-        newrecibido = JOptionPane.showInputDialog("Ingrese el nombre:");
-        jComboBox1.addItem(newrecibido);
+        crearcuenta cuentanueva = new crearcuenta();
+        cuentanueva.setVisible(true);
     }//GEN-LAST:event_jButton8ActionPerformed
 
     /**
@@ -458,9 +434,7 @@ public class Forma57 extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton5;
     private javax.swing.JButton jButton6;
     private javax.swing.JButton jButton7;

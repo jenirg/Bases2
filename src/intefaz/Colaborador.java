@@ -1,5 +1,7 @@
 package intefaz;
 
+import Backup.backup;
+import Bitacora.bitacora;
 import Clases.CRUD;
 import conexion.ConexionBD;
 import java.awt.event.KeyEvent;
@@ -11,15 +13,32 @@ import javax.swing.JOptionPane;
 
 public class Colaborador extends javax.swing.JFrame {
 
-    String pnombrecolab = "", snombrecolab = "", papellidocolab = "", sapellidocolab = "", puestocolab = "", dependenciacolab = "",Puesto = "", Dependencia = "",nuevopuesto = "", nuevadependencia = "";
-     CRUD miCrud = new CRUD();
+    String pnombrecolab = "", snombrecolab = "", papellidocolab = "", sapellidocolab = "", puestocolab = "", dependenciacolab = "", Puesto = "", Dependencia = "", nuevopuesto = "", nuevadependencia = "";
+    String usuarioNEW = "";
+    int autorizacionbackup = 0;
+    CRUD miCrud = new CRUD();
+    bitacora mibitacora=new bitacora();
+    backup mibackup = new backup();
     Connection con = (Connection) ConexionBD.GetConnection();
+
     /**
      * Creates new form Colaborador
      */
     public Colaborador() {
         initComponents();
         this.setLocationRelativeTo(null);
+
+        miCrud.ConsultaDePuestos(jComboBox1);
+        miCrud.ConsultaDeDependencia(jComboBox3);
+    }
+
+    public Colaborador(String usurio) {
+        initComponents();
+        this.setLocationRelativeTo(null);
+
+        miCrud.ConsultaDePuestos(jComboBox1);
+        miCrud.ConsultaDeDependencia(jComboBox3);
+        usuarioNEW = usurio;
     }
 
     /**
@@ -65,7 +84,7 @@ public class Colaborador extends javax.swing.JFrame {
         jButton1.setBackground(new java.awt.Color(153, 0, 0));
         jButton1.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         jButton1.setForeground(new java.awt.Color(255, 255, 255));
-        jButton1.setText("SALIR");
+        jButton1.setText("CERRAR SESIÓN");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton1ActionPerformed(evt);
@@ -153,7 +172,7 @@ public class Colaborador extends javax.swing.JFrame {
             }
         });
 
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Gerente", " ", " " }));
+        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { " ", " " }));
         jComboBox1.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
                 jComboBox1ItemStateChanged(evt);
@@ -172,7 +191,6 @@ public class Colaborador extends javax.swing.JFrame {
             }
         });
 
-        jComboBox3.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Area administrativa", "Gerente", " ", " " }));
         jComboBox3.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
                 jComboBox3ItemStateChanged(evt);
@@ -303,14 +321,27 @@ public class Colaborador extends javax.swing.JFrame {
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         // TODO add your handling code here:
-        Menu2 menul = new Menu2();
-        menul.setVisible(true);
-        dispose();
+        if (autorizacionbackup == 0) {
+            Menu2 menul = new Menu2();
+            menul.setVisible(true);
+            dispose();
+        } else {
+            JOptionPane.showMessageDialog(null, "DEBE CERRAR SESIÓN");
+        }
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
-        System.exit(0);
+        if (autorizacionbackup == 0) {
+            Menu2 menul = new Menu2();
+            menul.setVisible(true);
+            dispose();
+        } else if (autorizacionbackup >= 1) {
+            mibackup.generar_backup(usuarioNEW);
+            Menu2 menul = new Menu2();
+            menul.setVisible(true);
+            dispose();
+        }
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jTextField7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField7ActionPerformed
@@ -357,42 +388,46 @@ public class Colaborador extends javax.swing.JFrame {
     }//GEN-LAST:event_jTextField4KeyPressed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-    Dependencia = (String) jComboBox3.getSelectedItem();        // TODO add your handling code here:
-     Puesto = (String) jComboBox1.getSelectedItem(); 
+        miCrud.setUsuarioNew(usuarioNEW);
+        Dependencia = (String) jComboBox3.getSelectedItem();        // TODO add your handling code here:
+        Puesto = (String) jComboBox1.getSelectedItem();
         pnombrecolab = jTextField7.getText();
         snombrecolab = jTextField2.getText();
         papellidocolab = jTextField3.getText();
         sapellidocolab = jTextField4.getText();
-        if (pnombrecolab.equals("") || snombrecolab.equals("") ||  papellidocolab.equals("") ||  sapellidocolab.equals("")) {
+        if (pnombrecolab.equals("") || snombrecolab.equals("") || papellidocolab.equals("") || sapellidocolab.equals("")) {
             JOptionPane.showMessageDialog(null, "No ha  llenado correctamente los datos ");
-        } else if (pnombrecolab.equals("Primer Nombre")||snombrecolab.equals("Segundo Nombre")||papellidocolab.equals("Primer Apelldio")||sapellidocolab.equals("Segundo Apelldio")){
-         JOptionPane.showMessageDialog(null, "Tienen datos repetidos ");
-         }
+        } else if (pnombrecolab.equals("Primer Nombre") || snombrecolab.equals("Segundo Nombre") || papellidocolab.equals("Primer Apelldio") || sapellidocolab.equals("Segundo Apelldio")) {
+            JOptionPane.showMessageDialog(null, "Tienen datos repetidos ");
+        }
 
         System.out.println("1 nombre:" + pnombrecolab);
         System.out.println("2 nombre:" + snombrecolab);
         System.out.println("1 apellido: " + papellidocolab);
         System.out.println("2 apelldio:" + sapellidocolab);
-        System.out.println("dependencia:" +Dependencia);
+        System.out.println("dependencia:" + Dependencia);
         System.out.println("puesto:" + Puesto);
-        
-   try {
-      
-       
-    
- miCrud.InsertarColaborador(con, pnombrecolab ,snombrecolab,papellidocolab,sapellidocolab,Dependencia,Puesto);
-       System.out.println("INGRESADO CON EXITO"); 
-   } catch (SQLException ex) {
-        Logger.getLogger(Colaborador.class.getName()).log(Level.SEVERE, null, ex);
-    }
-    
+
+        try {
+
+            miCrud.InsertarColaborador(con, pnombrecolab, snombrecolab, papellidocolab, sapellidocolab, Dependencia, Puesto);
+            miCrud.commit();
+            mibitacora.Guardar_Clasificación(usuarioNEW, mibitacora.fechaactual(), mibitacora.horaactual(),"commit" ,"colaborador");
+            System.out.println("INGRESADO CON EXITO");
+            autorizacionbackup++;
+        } catch (SQLException ex) {
+            miCrud.rollback();
+            mibitacora.Guardar_Clasificación(usuarioNEW, mibitacora.fechaactual(), mibitacora.horaactual(),"rollback"  ,"colaborador");
+            Logger.getLogger(Colaborador.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
 
     }//GEN-LAST:event_jButton3ActionPerformed
 
     private void jComboBox1ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jComboBox1ItemStateChanged
         // TODO add your handling code here:
         String puesto = (String) jComboBox1.getSelectedItem();
-        Puesto =puesto;
+        Puesto = puesto;
     }//GEN-LAST:event_jComboBox1ItemStateChanged
 
     private void jComboBox3ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jComboBox3ItemStateChanged
@@ -402,15 +437,25 @@ public class Colaborador extends javax.swing.JFrame {
     }//GEN-LAST:event_jComboBox3ItemStateChanged
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
-        // TODO add your handling code here:
-      nuevopuesto = JOptionPane.showInputDialog("Ingrese el nuevo puesto");
-        jComboBox1.addItem(nuevopuesto);
+        try {
+            // TODO add your handling code here:
+            nuevopuesto = JOptionPane.showInputDialog("Ingrese el nuevo puesto");
+            jComboBox1.addItem(nuevopuesto);
+            miCrud.Insertar_puesto(nuevopuesto);
+        } catch (SQLException ex) {
+            Logger.getLogger(Colaborador.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_jButton4ActionPerformed
 
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
-        // TODO add your handling code here:
-          nuevadependencia= JOptionPane.showInputDialog("Ingrese la nueva dependencia");
-        jComboBox3.addItem(nuevadependencia);
+        try {
+            // TODO add your handling code here:
+            nuevadependencia = JOptionPane.showInputDialog("Ingrese la nueva dependencia");
+            jComboBox3.addItem(nuevadependencia);
+            miCrud.Insertar_dependencia(nuevadependencia);
+        } catch (SQLException ex) {
+            Logger.getLogger(Colaborador.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_jButton5ActionPerformed
 
     private void jComboBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox1ActionPerformed

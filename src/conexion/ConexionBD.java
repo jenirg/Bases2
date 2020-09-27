@@ -1,8 +1,4 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package conexion;
 
 import java.sql.Connection;
@@ -12,10 +8,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 
-/**
- *
- * @author jenirg
- */
+
 public class ConexionBD {
         public static Connection GetConnection()
     {
@@ -29,7 +22,8 @@ public class ConexionBD {
             String usuarioDB="root";
             String passwordDB="1234";
             conexion= DriverManager.getConnection(servidor,usuarioDB,passwordDB);
-            JOptionPane.showMessageDialog(null, "SI CONECTO");
+            conexion.setAutoCommit(false);
+            //JOptionPane.showMessageDialog(null, "SI CONECTO");
             return conexion;
         }
         catch(ClassNotFoundException ex)

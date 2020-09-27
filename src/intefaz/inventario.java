@@ -6,6 +6,8 @@
 package intefaz;
 
 import Clases.CRUD;
+import Backup.backup;
+import Bitacora.bitacora;
 import conexion.ConexionBD;
 import java.awt.Image;
 import java.awt.Toolkit;
@@ -30,11 +32,16 @@ import javax.swing.JOptionPane;
  */
 public class inventario extends javax.swing.JFrame {
 
-    String nombre = "", unidad = "", descripcion = "", otra_procedecia = "", modelo = "", marca = "";
-    int clave, cantidad,cont;
-    float total_monetario , valor_unitario;
+    String nombre = "", unidad = "", descripcion = "", otra_procedecia = "", modelo = "", marca = "", usuarioNEW = "";
+    int clave, cantidad, cont;
+    int autorizabackup = 0;
+    
+
+    float total_monetario, valor_unitario;
     CRUD miCrud = new CRUD();
+    bitacora mibitacora=new bitacora();
     int[] las_series;
+    backup mibackup = new backup();
     Connection miConexion = (Connection) ConexionBD.GetConnection();
 
     /**
@@ -52,6 +59,21 @@ public class inventario extends javax.swing.JFrame {
         //jButton5.setVisible(false);
         jTextField11.setEnabled(false);
         // dispose();
+    }
+
+    public inventario(String usuario) {
+        initComponents();
+        this.setLocationRelativeTo(null);
+
+        //FECHA DEL SISTEMA
+        Date Fechaactual = new Date();
+        SimpleDateFormat formato = new SimpleDateFormat("dd-MMM-YYYY");
+        fecha.setText(formato.format(Fechaactual));
+        //jButton1.setVisible(false);
+        //jButton5.setVisible(false);
+        jTextField11.setEnabled(false);
+        // dispose();
+        usuarioNEW = usuario;
     }
 
     class horas implements ActionListener {
@@ -207,7 +229,7 @@ public class inventario extends javax.swing.JFrame {
         jButton4.setBackground(new java.awt.Color(255, 51, 51));
         jButton4.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         jButton4.setForeground(new java.awt.Color(255, 255, 255));
-        jButton4.setText("SALIR");
+        jButton4.setText("CERRAR SESIÓN");
         jButton4.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton4ActionPerformed(evt);
@@ -321,13 +343,8 @@ public class inventario extends javax.swing.JFrame {
                                         .addComponent(fecha)
                                         .addGap(128, 128, 128)
                                         .addComponent(jLabel8)))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 115, Short.MAX_VALUE)
                                 .addComponent(jButton3))
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                                .addGap(178, 178, 178)
-                                .addComponent(jLabel1)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                                     .addGroup(jPanel1Layout.createSequentialGroup()
@@ -339,7 +356,7 @@ public class inventario extends javax.swing.JFrame {
                                     .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                         .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 376, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addComponent(jLabel3)))
-                                .addGap(0, 494, Short.MAX_VALUE)))
+                                .addGap(0, 0, Short.MAX_VALUE)))
                         .addContainerGap(51, Short.MAX_VALUE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -362,7 +379,13 @@ public class inventario extends javax.swing.JFrame {
                                                 .addComponent(jTextField12, javax.swing.GroupLayout.PREFERRED_SIZE, 167, javax.swing.GroupLayout.PREFERRED_SIZE)
                                                 .addComponent(jTextField13, javax.swing.GroupLayout.PREFERRED_SIZE, 167, javax.swing.GroupLayout.PREFERRED_SIZE)
                                                 .addComponent(jLabel12)))))))
-                        .addGap(0, 0, Short.MAX_VALUE))))
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(178, 178, 178)
+                        .addComponent(jLabel1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(36, 36, 36))))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -433,14 +456,28 @@ public class inventario extends javax.swing.JFrame {
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         // TODO add your handling code here:
-        Menu menul = new Menu();
-        menul.setVisible(true);
-        dispose();
+        if (autorizabackup == 0) {
+            Menu menul = new Menu();
+            menul.setVisible(true);
+            dispose();
+        } else {
+            JOptionPane.showMessageDialog(null, "DEBE CERRAR SESIÓN");
+        }
     }//GEN-LAST:event_jButton3ActionPerformed
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
         // TODO add your handling code here:
-        System.exit(0);
+        if (autorizabackup == 0) {
+            Menu menul = new Menu();
+            menul.setVisible(true);
+            dispose();
+        } else if (autorizabackup >= 1) {
+            mibackup.generar_backup(usuarioNEW);
+            Menu menul = new Menu();
+            menul.setVisible(true);
+            dispose();
+        }
+
     }//GEN-LAST:event_jButton4ActionPerformed
 
     private void jTextField1KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextField1KeyPressed
@@ -493,7 +530,7 @@ public class inventario extends javax.swing.JFrame {
 
     private void jTextField2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField2ActionPerformed
         // TODO add your handling code here:
-
+        mibackup.generar_backup(usuarioNEW);
     }//GEN-LAST:event_jTextField2ActionPerformed
 
     private void jTextField11KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextField11KeyPressed
@@ -505,7 +542,7 @@ public class inventario extends javax.swing.JFrame {
     }//GEN-LAST:event_jTextField11KeyPressed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-
+        miCrud.setUsuarioNew(usuarioNEW);
         // TODO add your handling code here:
         if (descripcion.equals("SIN DESCRIPCIÓN")) {
             descripcion = "SIN DESCRIPCIÓN";
@@ -566,19 +603,25 @@ public class inventario extends javax.swing.JFrame {
                 try {
                     miCrud.Insertar_serie(serie);
                     miCrud.IngresarRegistro(miConexion, nombre, cantidad, marca, modelo, otra_procedecia, descripcion, total_monetario, valor_unitario);
+                    //miCrud.commit();
                     miCrud.getconexion();
+                    mibitacora.Guardar_Clasificación(usuarioNEW, mibitacora.fechaactual(), mibitacora.horaactual()," ingreso de registro el cual esta en proceso" ,"registro");
                     //miCrud.Insertar_registro(nombre, cantidad, marca, modelo, otra_procedecia, descripcion, total_monetario, valor_unitario, );
                     //miCrud.getconexion();
 
                     JOptionPane.showMessageDialog(null, "Dato " + cont + "ingresado correctamente");
                     cont++;
-                    Forma57 yy = new Forma57();
+                    Forma57 yy = new Forma57(usuarioNEW);
                     yy.setVisible(true);
+                    autorizabackup++;//si hay commit
                     // miCrud.Insertar_registro(nombre, cantidad, marca, modelo, otra_procedecia, descripcion, total_monetario, valor_unitario, 9);
                     // miCrud.Insertar_registro("cable",5,"utp","x","compra","sin_imagen",500,500, 7);
                     //guardar serie
                     // guardar el producto en el registro
+
                 } catch (SQLException ex) {
+                    miCrud.rollback();
+                    mibitacora.Guardar_Clasificación(usuarioNEW, mibitacora.fechaactual(), mibitacora.horaactual(),"rollback" ,"registro");
                     Logger.getLogger(inventario.class.getName()).log(Level.SEVERE, null, ex);
                 }/*}
                 else if (cont>cantidad){
@@ -619,9 +662,11 @@ public class inventario extends javax.swing.JFrame {
                 Forma57 yy = new Forma57();
                 yy.setVisible(true);
                 //guardar el producto en registro
+
             } catch (SQLException ex) {
 
-                Logger.getLogger(inventario.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(inventario.class
+                        .getName()).log(Level.SEVERE, null, ex);
             }
             // }
             //insertarmos datos en el registro
@@ -704,16 +749,24 @@ public class inventario extends javax.swing.JFrame {
                 if ("Nimbus".equals(info.getName())) {
                     javax.swing.UIManager.setLookAndFeel(info.getClassName());
                     break;
+
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(inventario.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(inventario.class
+                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
+
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(inventario.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(inventario.class
+                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
+
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(inventario.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(inventario.class
+                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
+
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(inventario.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(inventario.class
+                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
 
